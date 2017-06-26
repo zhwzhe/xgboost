@@ -6,11 +6,7 @@ import shutil
 import subprocess
 import sys
 from contextlib import contextmanager
-
-
-# Monkey-patch the API inconsistency between Python2.X and 3.X.
-if sys.platform.startswith("linux"):
-    sys.platform = "linux"
+from subprocess import check_output
 
 
 CONFIG = {
@@ -60,18 +56,14 @@ def cp(source, target):
 
 def normpath(path):
     """Normalize UNIX path to a native path."""
-    normalized = os.path.join(*path.split("/"))
-    if os.path.isabs(path):
-        return os.path.abspath("/") + normalized
-    else:
-        return normalized
+    return os.path.join(*path.split("/"))
 
 
 if __name__ == "__main__":
     if sys.platform == "darwin":
         # Enable of your compiler supports OpenMP.
         CONFIG["USE_OPENMP"] = "OFF"
-        os.environ["JAVA_HOME"] = subprocess.check_output(
+        os.environ["JAVA_HOME"] = check_output(
             "/usr/libexec/java_home").strip().decode()
 
     print("building Java wrapper")
@@ -96,7 +88,7 @@ if __name__ == "__main__":
     library_name = {
         "win32": "xgboost4j.dll",
         "darwin": "libxgboost4j.dylib",
-        "linux": "libxgboost4j.so"
+        "linux2": "libxgboost4j.so"
     }[sys.platform]
     maybe_makedirs("xgboost4j/src/main/resources/lib")
     cp("../lib/" + library_name, "xgboost4j/src/main/resources/lib")

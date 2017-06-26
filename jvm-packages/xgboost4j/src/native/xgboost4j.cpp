@@ -76,7 +76,7 @@ XGB_EXTERN_C int XGBoost4jCallbackDataIterNext(
         batch, jenv->GetFieldID(batchClass, "featureValue", "[F"));
       XGBoostBatchCSR cbatch;
       cbatch.size = jenv->GetArrayLength(joffset) - 1;
-      cbatch.offset = reinterpret_cast<jlong *>(
+      cbatch.offset = reinterpret_cast<long *>(
           jenv->GetLongArrayElements(joffset, 0));
       if (jlabel != nullptr) {
         cbatch.label = jenv->GetFloatArrayElements(jlabel, 0);
